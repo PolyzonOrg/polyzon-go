@@ -1,0 +1,27 @@
+{
+  "query": "дракон",
+  "correctedQuery": null,
+  "didYouMean": null,
+  "total": 1873,
+  "totalRelation": "eq",
+  "page": 1,
+  "size": 20,
+  "hasMore": true,
+  "partial": false,
+  "items": [
+    {
+      "source": "thingiverse",
+      "id": "tv-1234567",
+      "title": "Дракон с подвижными сочленениями (пример)",
+      "url": "https://www.thingiverse.com/thing:1234567",
+      "thumbnail": "https://cdn.thingiverse.com/assets/dragon.jpg",
+      "creator": "example_maker",
+      "license": "cc-by-nc",
+      "price": { "type": "free", "value": 0, "currency": null, "display": "Бесплатно" },
+      "formats": ["stl"],
+      "tags": ["дракон", "игрушка"],
+      "stats": { "likes": 51234, "comments": 870, "makes": 3120, "collects": 61000 },
+      "publishedAt": "2021-01-17T10:21:00Z"
+    }
+  ]
+}

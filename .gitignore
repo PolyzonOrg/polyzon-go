@@ -1,0 +1,20 @@
+# Test and coverage output
+*.test
+*.out
+*.prof
+coverage.*
+
+# Built example binaries
+/quickstart
+/pagination
+/batch
+/proxy
+*.exe
+
+# Local workspace and editor files
+go.work
+go.work.sum
+.env
+.idea/
+.vscode/
+.DS_Store

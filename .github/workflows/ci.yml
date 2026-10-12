@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (go ${{ matrix.go }}, ubuntu)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ['1.23', stable]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ matrix.go }}
+          cache: false # no dependencies to cache
+      - name: gofmt
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then echo "not gofmt-ed:"; echo "$unformatted"; exit 1; fi
+      - name: go vet
+        run: go vet ./...
+      - name: staticcheck
+        if: matrix.go == 'stable'
+        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+      - name: build (library and examples)
+        run: go build ./...
+      - name: test (race detector, coverage)
+        run: go test -race -count=1 -coverprofile=coverage.out .
+      - name: coverage at least 90 %
+        run: |
+          total="$(go tool cover -func=coverage.out | awk '/^total:/ { sub("%", "", $3); print $3 }')"
+          echo "total coverage: ${total} %"
+          awk -v t="$total" 'BEGIN { exit !(t >= 90) }'
+
+  windows:
+    name: test (go stable, windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache: false
+      - run: go build ./...
+      - run: go test -count=1 ./...
+
+  govulncheck:
+    name: govulncheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f # v1.1.0
+        with:
+          repo-checkout: false
+          cache: false # no go.sum: nothing to cache
+          go-version-input: stable
+          go-package: ./...

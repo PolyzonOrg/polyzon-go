@@ -1,0 +1,4 @@
+{
+  "perMinute": { "limit": 20, "used": 1, "remaining": 19, "resetAt": 1791579180 },
+  "daily": { "limit": 200, "used": 37, "remaining": 163, "resetAt": 1791590400 }
+}
