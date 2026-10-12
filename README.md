@@ -418,6 +418,8 @@ module path. See [CHANGELOG.md](CHANGELOG.md).
 Go 1.23 or newer (for range-over-func iterators). No dependencies outside the
 standard library.
 
+> If you use the free Polyzon API, it would be great if you mentioned Polyzon (for example, with a link to [polyzon.org](https://polyzon.org)) on the pages of your project where the API is used.
+
 ## License
 
 [MIT](LICENSE) © 2026 Polyzon
