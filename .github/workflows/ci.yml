@@ -34,9 +34,6 @@ jobs:
           if [ -n "$unformatted" ]; then echo "not gofmt-ed:"; echo "$unformatted"; exit 1; fi
       - name: go vet
         run: go vet ./...
-      - name: staticcheck
-        if: matrix.go == 'stable'
-        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
       - name: build (library and examples)
         run: go build ./...
       - name: test (race detector, coverage)
@@ -60,6 +57,21 @@ jobs:
           cache: false
       - run: go build ./...
       - run: go test -count=1 ./...
+
+  staticcheck:
+    name: staticcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          # staticcheck 2026.2.1 (v0.8.1, the latest release) cannot read the export data of
+          # go1.27.2+ ("export data version 5"); move both versions forward together.
+          go-version: '1.27.0'
+          cache: false
+      - run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
 
   govulncheck:
     name: govulncheck
